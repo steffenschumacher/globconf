@@ -10,7 +10,7 @@ from globconf import config
 
 if 'important section' not in config.sections():
     config.read_string("""
-    [important sectioj]
+    [important section]
     host = critical-system.com
     user = REST_USER
     pwd = REST_PASSWORD
@@ -23,21 +23,14 @@ if 'important section' not in config.sections():
 
 In modules:
 ```
-from globconf import config
+from globconf import config, verify_required_options
 class module(object):
     def __init__(self):
         sec = 'service now'
-        if not sec in config.sections():
-            raise configparser.NoSectionError(sec)
-        cfg = config[sec]
-        if not cfg.getboolean('verify_ssl', fallback=True):
+        self.cfg = verify_required_options(sec, ['host', 'user', 'pwd'])
+        if not self.cfg.getboolean('verify_ssl', fallback=True):
             import urllib3
             urllib3.disable_warnings(InsecureRequestWarning)
-
-        for key in ['host', 'user', 'pwd']:
-            if key not in cfg:
-                raise Exception('{} section needs the {} setting'.format(sec, key))
-        self.cfg = cfg  # this is where the class stores all the needed vars..
 ```
 
 And your module is happy as long as someone has initialised the needed section in the global config.

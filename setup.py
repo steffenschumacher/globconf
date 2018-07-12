@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="globconf",
-    version="0.0.1",
+    version="0.0.2",
     author="Steffen Schumacher",
     author_email="ssch@wheel.dk",
     description="global configparser object to be used across modules",
