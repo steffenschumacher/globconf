@@ -3,12 +3,15 @@
 Creates a global configparser object, regardless of the project and module in need of it
 
 ## Getting Started
-In project:
+In project using globconf:
 ```
 from globconf import config
-# config will attempt to read local config.ini file if present - otherwise:
-
-if 'important section' not in config.sections():
+# config will attempt to read local config.ini file if present - required options are verified using.
+from globconf import verify_required_options
+cfg = verify_required_options('Section name', ['list', 'of', 'required', 'options', 'for', 'the', 'section'])
+ 
+# if config.ini is not found, then defaults can be read from a string, within the module relying on globconf like so:
+if 'Section name' not in config.sections():
     config.read_string("""
     [important section]
     host = critical-system.com
@@ -16,9 +19,8 @@ if 'important section' not in config.sections():
     pwd = REST_PASSWORD
     verify_ssl = false
     """)
-# or config.read('some_other_config.ini')
-
-# load class using globconf.config
+# or 
+config.read('some_other_config.ini')
 ```
 
 In modules:
@@ -44,7 +46,7 @@ configparser
 Build:
 ```
 sudo python setup.py sdist bdist_wheel
-twine upload --repository-url http://dkcdcipam99.vestas.net:8080/ -u netautomation -p netautomation dist/*
+twine upload dist/*
 ```
 
 
