@@ -1,4 +1,3 @@
-name = 'globconf'
 import configparser
 
 """

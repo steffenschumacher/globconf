@@ -40,20 +40,14 @@ And your module is happy as long as someone has initialised the needed section i
 configparser
 
 
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-
+### Building
+Build:
 ```
-Give the example
+sudo python setup.py sdist bdist_wheel
+twine upload --repository-url http://dkcdcipam99.vestas.net:8080/ -u netautomation -p netautomation dist/*
 ```
 
-And repeat
 
-```
-until finished
-```
 
 End with an example of getting some data out of the system or using it for a little demo
 
