@@ -1,0 +1,9 @@
+[app_user]
+path_regex = .*
+username = app_user
+password = app_pass
+
+[build_agent]
+path_regex = development/.*
+username = build_agent
+password = build_pass
