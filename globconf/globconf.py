@@ -1,3 +1,4 @@
+from os import environ
 from configparser import ConfigParser, NoOptionError, NoSectionError, SectionProxy
 
 """
@@ -6,21 +7,47 @@ global/singleton config object to be uses across modules
 config = None
 
 
-def verify_required_options(section, option_keys):
+def _parse_option(v):
+    if v.lower() in 'true yes on':
+        return True
+    elif v.lower() in 'false, no off':
+        return False
+    elif v.isnumeric():
+        return int(v)
+    elif v.replace('.', '').isnumeric():
+        return float(v)
+    else:
+        return v
+
+
+def verify_required_options(section, option_keys, defaults={}, parse_env=False):
     """
     Verifies that section exists, and that it has option_keys defined
     :param str section: Section in the config
     :param list[str] option_keys: list of required options
-    :rtype: SectionProxy
+    :param dict[str, str] defaults: dict of default option values
+    :param bool parse_env: parse environment variables (trumps file options)
+    :rtype: dict[str, str|]
     :raises: NoSectionError, NoOptionError
     """
-    myconfig = read_config()
-    if section not in myconfig:
-        raise NoSectionError(section)
-    for option in option_keys:
-        if option not in myconfig[section]:
-            raise NoOptionError(option, section)
-    return myconfig[section]
+    merged_config = defaults.copy()
+    file_config = read_config()
+    if section in file_config:
+        for k, v in file_config[section].items():
+            merged_config[k] = _parse_option(v)
+    if parse_env:
+        up_sec = section.upper().replace(' ', '_')
+        for k, v in merged_config.items():
+            candidate = environ.get('{}_{}'.format(up_sec, k.upper()))
+            if candidate is not None:
+                merged_config[k] = _parse_option(candidate)
+    missing_requireds = [k for k in option_keys if k not in merged_config or merged_config[k] is None]
+    if missing_requireds:
+        if section not in file_config:
+            raise NoSectionError(section)
+        else:
+            raise NoOptionError(', '.join(missing_requireds), section)
+    return merged_config
 
 
 def read_config(path='config.ini', force=False):
