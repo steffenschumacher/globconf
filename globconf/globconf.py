@@ -27,7 +27,7 @@ def verify_required_options(section, option_keys, defaults={}, parse_env=False):
     :param list[str] option_keys: list of required options
     :param dict[str, str] defaults: dict of default option values
     :param bool parse_env: parse environment variables (trumps file options)
-    :rtype: dict[str, str|]
+    :rtype: dict[str, str|int|float|bool]
     :raises: NoSectionError, NoOptionError
     """
     merged_config = defaults.copy()
