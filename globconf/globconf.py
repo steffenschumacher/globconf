@@ -1,5 +1,6 @@
 from os import environ
 from configparser import ConfigParser, NoOptionError, NoSectionError, SectionProxy
+from .ConfigSection import ConfigSection
 
 """
 global/singleton config object to be uses across modules
@@ -30,7 +31,7 @@ def verify_required_options(section, option_keys, defaults={}, parse_env=False):
     :rtype: dict[str, str|int|float|bool]
     :raises: NoSectionError, NoOptionError
     """
-    merged_config = defaults.copy()
+    merged_config = ConfigSection(defaults)
     file_config = read_config()
     if section in file_config:
         for k, v in file_config[section].items():

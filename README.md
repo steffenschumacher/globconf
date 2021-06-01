@@ -33,18 +33,17 @@ cfg = verify_required_options('Some section', ['required', 'options', 'for', 'th
 In modules:
 ```python
 from globconf import verify_required_options
-class module(object):
+class cls(object):
     def __init__(self):
-        sec = 'service now'
-        self.cfg = verify_required_options(sec, ['host', 'user', 'pwd'])
-        if not self.cfg.getboolean('verify_ssl', fallback=True):
+        self.cfg = verify_required_options('service now', ['host', 'user', 'pwd'])
+        if self.cfg.get('verify_ssl', True) is False:
             import urllib3
             urllib3.disable_warnings(InsecureRequestWarning)
 ```
 
 And your module is happy as long as someone has initialised the needed section in the global config.
 
-##globconfd via docker
+## globconfd via docker
 ```
 docker run -it -v ./users.conf:env_users.conf -v ./cfgs:/configs -p 5000:5000 ssch/globconfd:latest -d
 ```
